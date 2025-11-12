@@ -94,27 +94,36 @@ export default function PollPage() {
 
     setIsSubmitting(true)
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 600))
+    try {
+      const { apiClient } = await import('@/lib/api-client')
+      
+      await apiClient.vote(pollId, { optionIndex: selectedOption })
 
-    // Update votes in localStorage
-    const polls = JSON.parse(localStorage.getItem('polls') || '[]')
-    const pollIndex = polls.findIndex((p: Poll) => p.id === pollId)
+      // Mark as voted in localStorage (client-side tracking)
+      const votedPolls = JSON.parse(localStorage.getItem('voted_polls') || '{}')
+      votedPolls[pollId] = selectedOption
+      localStorage.setItem('voted_polls', JSON.stringify(votedPolls))
 
-    if (pollIndex !== -1) {
-      polls[pollIndex].votes[selectedOption]++
-      localStorage.setItem('polls', JSON.stringify(polls))
-      setPoll(polls[pollIndex])
+      setUserVotedOption(selectedOption)
+      setViewState('results')
+
+      // Refresh poll data
+      const updatedPoll = await apiClient.getPoll(pollId)
+      setPoll(updatedPoll)
+    } catch (error: any) {
+      if (error.message === 'ALREADY_VOTED') {
+        // Mark as voted and show results
+        const votedPolls = JSON.parse(localStorage.getItem('voted_polls') || '{}')
+        votedPolls[pollId] = selectedOption
+        localStorage.setItem('voted_polls', JSON.stringify(votedPolls))
+        setUserVotedOption(selectedOption)
+        setViewState('results')
+      } else {
+        alert('Nie udało się zagłosować. Spróbuj ponownie.')
+      }
+    } finally {
+      setIsSubmitting(false)
     }
-
-    // Mark as voted
-    const votedPolls = JSON.parse(localStorage.getItem('voted_polls') || '{}')
-    votedPolls[pollId] = selectedOption
-    localStorage.setItem('voted_polls', JSON.stringify(votedPolls))
-
-    setUserVotedOption(selectedOption)
-    setViewState('results')
-    setIsSubmitting(false)
   }
 
   const handleAdminAccess = () => {
@@ -125,20 +134,24 @@ export default function PollPage() {
     setPinError('')
     setIsSubmitting(true)
 
-    await new Promise(resolve => setTimeout(resolve, 500))
+    try {
+      const { apiClient } = await import('@/lib/api-client')
+      const { valid } = await apiClient.verifyPin(pollId, { pin: adminPin })
 
-    const polls = JSON.parse(localStorage.getItem('polls') || '[]')
-    const foundPoll = polls.find((p: any) => p.id === pollId)
-
-    if (foundPoll && foundPoll.pin === adminPin) {
-      setIsAdmin(true)
-      setShowPinModal(false)
-      setViewState('admin')
-    } else {
-      setPinError('Nieprawidłowy PIN')
+      if (valid) {
+        setIsAdmin(true)
+        setShowPinModal(false)
+        setViewState('admin')
+        // Store in session for future access
+        sessionStorage.setItem(`admin_${pollId}`, adminPin)
+      } else {
+        setPinError('Nieprawidłowy PIN')
+      }
+    } catch (error) {
+      setPinError('Nie udało się zweryfikować PIN-u')
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setIsSubmitting(false)
   }
 
   const handleDeletePoll = async () => {
@@ -147,13 +160,27 @@ export default function PollPage() {
     }
 
     setIsSubmitting(true)
-    await new Promise(resolve => setTimeout(resolve, 500))
 
-    const polls = JSON.parse(localStorage.getItem('polls') || '[]')
-    const updatedPolls = polls.filter((p: Poll) => p.id !== pollId)
-    localStorage.setItem('polls', JSON.stringify(updatedPolls))
+    try {
+      const { apiClient } = await import('@/lib/api-client')
+      const sessionPin = sessionStorage.getItem(`admin_${pollId}`)
+      
+      if (!sessionPin) {
+        alert('Brak PIN-u w sesji')
+        return
+      }
 
-    router.push('/')
+      await apiClient.deletePoll(pollId, { pin: sessionPin })
+      
+      // Clear session
+      sessionStorage.removeItem(`admin_${pollId}`)
+      
+      router.push('/')
+    } catch (error: any) {
+      alert(error.message || 'Nie udało się usunąć ankiety')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (viewState === 'loading') {
