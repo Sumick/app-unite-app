@@ -36,36 +36,36 @@ export default function PollPage() {
   // Load poll data
   useEffect(() => {
     const loadPoll = async () => {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 500))
+      try {
+        const { apiClient } = await import('@/lib/api-client')
+        const fetchedPoll = await apiClient.getPoll(pollId)
 
-      const polls = JSON.parse(localStorage.getItem('polls') || '[]')
-      const foundPoll = polls.find((p: Poll) => p.id === pollId)
+        setPoll(fetchedPoll)
 
-      if (!foundPoll) {
-        setViewState('error')
-        return
-      }
-
-      setPoll(foundPoll)
-
-      // Check if admin mode with session
-      if (isAdminMode) {
-        const sessionPin = sessionStorage.getItem(`admin_${pollId}`)
-        if (sessionPin && sessionPin === foundPoll.pin) {
-          setIsAdmin(true)
-          setViewState('admin')
-          return
+        // Check if admin mode with session
+        if (isAdminMode) {
+          const sessionPin = sessionStorage.getItem(`admin_${pollId}`)
+          if (sessionPin) {
+            const { valid } = await apiClient.verifyPin(pollId, { pin: sessionPin })
+            if (valid) {
+              setIsAdmin(true)
+              setViewState('admin')
+              return
+            }
+          }
         }
-      }
 
-      // Check if user already voted
-      const votedPolls = JSON.parse(localStorage.getItem('voted_polls') || '{}')
-      if (votedPolls[pollId] !== undefined) {
-        setUserVotedOption(votedPolls[pollId])
-        setViewState('results')
-      } else {
-        setViewState('voting')
+        // Check if user already voted (localStorage for client-side tracking)
+        const votedPolls = JSON.parse(localStorage.getItem('voted_polls') || '{}')
+        if (votedPolls[pollId] !== undefined) {
+          setUserVotedOption(votedPolls[pollId])
+          setViewState('results')
+        } else {
+          setViewState('voting')
+        }
+      } catch (error) {
+        console.error('Load poll error:', error)
+        setViewState('error')
       }
     }
 
@@ -74,13 +74,15 @@ export default function PollPage() {
 
   // Poll for live updates (only in results view)
   useEffect(() => {
-    if (viewState !== 'results') return
+    if (viewState !== 'results' && viewState !== 'admin') return
 
-    const interval = setInterval(() => {
-      const polls = JSON.parse(localStorage.getItem('polls') || '[]')
-      const updatedPoll = polls.find((p: Poll) => p.id === pollId)
-      if (updatedPoll) {
+    const interval = setInterval(async () => {
+      try {
+        const { apiClient } = await import('@/lib/api-client')
+        const updatedPoll = await apiClient.getPoll(pollId)
         setPoll(updatedPoll)
+      } catch (error) {
+        console.error('Poll update error:', error)
       }
     }, 1000)
 

@@ -69,28 +69,21 @@ export default function CreatePollPage() {
 
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800))
+    try {
+      const { apiClient } = await import('@/lib/api-client')
+      
+      const poll = await apiClient.createPoll({
+        question: question.trim(),
+        options: options.map(opt => opt.value.trim()),
+        pin: pin,
+      })
 
-    // Generate poll ID
-    const pollId = Math.random().toString(36).substring(2, 10)
-
-    // Store poll in localStorage
-    const poll = {
-      id: pollId,
-      question: question.trim(),
-      options: options.map(opt => opt.value.trim()),
-      createdAt: new Date().toISOString(),
-      votes: options.map(() => 0),
-      pin: pin // Store PIN for admin access
+      setCreatedPollId(poll.id)
+    } catch (error: any) {
+      setPinError(error.message || 'Nie udało się utworzyć ankiety')
+    } finally {
+      setIsSubmitting(false)
     }
-
-    const polls = JSON.parse(localStorage.getItem('polls') || '[]')
-    polls.push(poll)
-    localStorage.setItem('polls', JSON.stringify(polls))
-
-    setCreatedPollId(pollId)
-    setIsSubmitting(false)
   }
 
   const copyLink = async () => {
