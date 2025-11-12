@@ -19,9 +19,10 @@ function getClientIP(request: NextRequest): string {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { optionIndex } = body
 
@@ -38,7 +39,7 @@ export async function POST(
 
     // Check if poll exists
     const poll = await prisma.poll.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!poll) {
@@ -59,7 +60,7 @@ export async function POST(
     // Check if already voted (unique constraint will catch this too)
     const existingVote = await prisma.vote.findFirst({
       where: {
-        pollId: params.id,
+        pollId: id,
         ipAddress,
         userAgent,
       },
@@ -75,7 +76,7 @@ export async function POST(
     // Create vote
     await prisma.vote.create({
       data: {
-        pollId: params.id,
+        pollId: id,
         optionIndex,
         ipAddress,
         userAgent,
