@@ -4,18 +4,94 @@
 
 ---
 
-## Phase 1: Project Setup (5 min)
+## Phase 1: Project Setup (5 min) ✅
 
 ### Tasks
-- [ ] Init Next.js 15 project (App Router)
-- [ ] Setup TailwindCSS
-- [ ] Configure TypeScript
-- [ ] Setup folder structure
-- [ ] Install dependencies (Prisma, UUID)
-- [ ] Git init + first commit
+- [x] Init Next.js 15 project (App Router)
+- [x] Setup TailwindCSS + configure design tokens
+- [x] Configure TypeScript
+- [x] Setup folder structure
+- [x] Install dependencies (Prisma, UUID, Lucide React)
+- [x] Git init + first commit
+
+### Design System Setup
+Configure `tailwind.config.ts` with design tokens:
+
+```typescript
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#eff6ff',
+          600: '#2563eb',
+          700: '#1d4ed8',
+        },
+        success: {
+          50: '#f0fdf4',
+          600: '#16a34a',
+        },
+        warning: {
+          50: '#fffbeb',
+          600: '#d97706',
+        },
+        error: {
+          50: '#fef2f2',
+          600: '#dc2626',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        '4xl': '2.25rem',
+        '2xl': '1.5rem',
+        'lg': '1.125rem',
+        'base': '1rem',
+        'sm': '0.875rem',
+      },
+      spacing: {
+        '2': '0.5rem',
+        '4': '1rem',
+        '6': '1.5rem',
+        '8': '2rem',
+        '12': '3rem',
+      },
+      borderRadius: {
+        'md': '0.5rem',
+        'lg': '0.75rem',
+      },
+      boxShadow: {
+        'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        'md': '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+      },
+    },
+  },
+  plugins: [],
+}
+export default config
+```
+
+Add Inter font to `app/layout.tsx`:
+```typescript
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin', 'latin-ext'] })
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="pl" className={inter.className}>
+      <body>{children}</body>
+    </html>
+  )
+}
+```
 
 ### Deliverable
-✅ Działający dev server na `localhost:3000`
+✅ Działający dev server na `localhost:3000` + design system skonfigurowany
 
 ---
 
