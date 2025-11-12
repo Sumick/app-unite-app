@@ -98,7 +98,7 @@ export default function PollPage() {
     // Update votes in localStorage
     const polls = JSON.parse(localStorage.getItem('polls') || '[]')
     const pollIndex = polls.findIndex((p: Poll) => p.id === pollId)
-    
+
     if (pollIndex !== -1) {
       polls[pollIndex].votes[selectedOption]++
       localStorage.setItem('polls', JSON.stringify(polls))
@@ -194,7 +194,7 @@ export default function PollPage() {
                   {poll.question}
                 </h1>
               </div>
-              
+
               {userVotedOption !== null && (
                 <div className="bg-success-50 border-l-4 border-success-600 p-4 rounded">
                   <div className="flex items-center">
@@ -216,11 +216,10 @@ export default function PollPage() {
                 return (
                   <div
                     key={index}
-                    className={`p-4 rounded-lg border-2 transition-colors ${
-                      isUserChoice
+                    className={`p-4 rounded-lg border-2 transition-colors ${isUserChoice
                         ? 'border-primary-600 bg-primary-50'
                         : 'border-gray-200 bg-white'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-gray-900 flex items-center">
@@ -358,7 +357,7 @@ export default function PollPage() {
                   Wróć do wyników
                 </Button>
               </div>
-              
+
               <div className="bg-primary-50 border-l-4 border-primary-600 p-4 rounded">
                 <p className="text-sm text-primary-900 font-medium">
                   {poll?.question}
@@ -415,12 +414,13 @@ export default function PollPage() {
                   <Button
                     variant="secondary"
                     onClick={() => {
+                      // Open poll in new tab for preview
                       window.open(`/poll/${pollId}`, '_blank')
                     }}
                     className="w-full"
                   >
                     <Eye className="w-4 h-4 mr-2" />
-                    Zobacz ankietę
+                    Zobacz ankietę (preview)
                   </Button>
                   <Button
                     variant="secondary"
@@ -463,19 +463,17 @@ export default function PollPage() {
                 key={index}
                 onClick={() => setSelectedOption(index)}
                 disabled={isSubmitting}
-                className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
-                  selectedOption === index
+                className={`w-full p-4 rounded-lg border-2 text-left transition-all ${selectedOption === index
                     ? 'border-primary-600 bg-primary-50 shadow-sm'
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 <div className="flex items-center">
                   <div
-                    className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
-                      selectedOption === index
+                    className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${selectedOption === index
                         ? 'border-primary-600 bg-primary-600'
                         : 'border-gray-300'
-                    }`}
+                      }`}
                   >
                     {selectedOption === index && (
                       <div className="w-2 h-2 bg-white rounded-full" />

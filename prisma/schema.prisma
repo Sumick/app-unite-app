@@ -8,23 +8,26 @@ datasource db {
 }
 
 model Poll {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   question  String
-  options   String   // JSON array stored as string
+  options   String[] // Array of options
+  pin       String   // 4-digit PIN for admin
   createdAt DateTime @default(now())
   votes     Vote[]
+
+  @@map("polls")
 }
 
 model Vote {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   pollId      String
-  optionIndex Int
+  poll        Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  optionIndex Int      // Index of selected option
   ipAddress   String
   userAgent   String
   votedAt     DateTime @default(now())
-  
-  poll Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
-  
+
+  @@unique([pollId, ipAddress, userAgent]) // Prevent double voting
   @@index([pollId])
-  @@index([ipAddress, pollId])
+  @@map("votes")
 }

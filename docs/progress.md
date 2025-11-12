@@ -76,18 +76,30 @@
 
 ---
 
+### Phase 8: Backend Integration (2025-11-12)
+- [x] Prisma schema (Poll, Vote models)
+- [x] Database migration (Postgres)
+- [x] API: POST /api/polls (create poll)
+- [x] API: GET /api/polls/[id] (get poll + results)
+- [x] API: POST /api/polls/[id]/vote (vote + IP/UA check)
+- [x] API: POST /api/polls/[id]/verify (PIN verification)
+- [x] API: DELETE /api/polls/[id] (delete poll)
+
+**Time Spent**: ~8 min  
+**Notes**: Minimalist backend, direct Prisma (no layers), IP + User Agent double voting prevention
+
+---
+
 ## 🚧 In Progress
 
-### Phase 7: Polish & Responsive
-- [ ] Mobile responsive check
-- [ ] Loading states consistency
-- [ ] Error states consistency
-- [ ] Animations polish
-- [ ] Accessibility basics
-- [ ] Manual test full flow
+### Phase 8b: Frontend Integration
+- [ ] Replace localStorage with API calls in /create
+- [ ] Replace localStorage with API calls in /poll/[id]
+- [ ] Error handling for API failures
+- [ ] Loading states during API calls
 
-**Started**: 2025-11-12 19:40  
-**ETA**: 4 min  
+**Started**: 2025-11-12 20:03  
+**ETA**: 5 min  
 **Blockers**: None
 
 ---
