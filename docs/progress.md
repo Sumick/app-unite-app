@@ -90,15 +90,28 @@
 
 ---
 
+### Phase 8b: Frontend Integration (2025-11-12)
+- [x] API Client (`lib/api-client.ts`) - singleton with all methods
+- [x] Replace localStorage in `/create` (createPoll)
+- [x] Replace localStorage in `/poll/[id]` (getPoll, vote, verifyPin, deletePoll)
+- [x] Live polling with API (1s interval)
+- [x] Error handling (ALREADY_VOTED, network errors)
+- [x] Loading states maintained
+
+**Time Spent**: ~5 min  
+**Notes**: Full API integration complete, localStorage only for client-side voted tracking
+
+---
+
 ## 🚧 In Progress
 
-### Phase 8b: Frontend Integration
-- [ ] Replace localStorage with API calls in /create
-- [ ] Replace localStorage with API calls in /poll/[id]
-- [ ] Error handling for API failures
-- [ ] Loading states during API calls
+### Phase 9: Testing & Polish
+- [ ] Manual test: Create poll → Vote → Admin panel → Delete
+- [ ] Test double voting prevention (different browsers/devices)
+- [ ] Test mobile responsive
+- [ ] Fix any bugs found
 
-**Started**: 2025-11-12 20:03  
+**Started**: 2025-11-12 20:10  
 **ETA**: 5 min  
 **Blockers**: None
 
