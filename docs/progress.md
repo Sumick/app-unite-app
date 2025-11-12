@@ -10,54 +10,98 @@
 ### Documentation (2025-11-12)
 - [x] `specification.md` - Full technical spec
 - [x] `icp.md` - Target customer profile
-- [x] `implementation-plan.md` - 40-minute roadmap
+- [x] `implementation-plan.md` - Frontend-first roadmap
 - [x] `progress.md` - This tracker
 
 **Time Spent**: ~15 min  
 **Notes**: Docs ready, ICP focused on municipal government
 
+### Phase 1: Project Setup (2025-11-12)
+- [x] Init Next.js 15 project
+- [x] Setup TailwindCSS + design tokens
+- [x] Configure TypeScript
+- [x] Folder structure
+- [x] Install dependencies
+
+**Time Spent**: ~5 min  
+**Notes**: Design system configured, Inter font added
+
+### Phase 2: Core Components (2025-11-12)
+- [x] Button component (3 variants)
+- [x] Input component (with label, error states)
+- [x] Card component
+- [x] ProgressBar component
+- [x] LoadingSpinner component
+- [x] ErrorMessage component
+
+**Time Spent**: ~8 min  
+**Notes**: All UI components in `/components/ui/`
+
+### Phase 3: Admin PIN Gate (2025-11-12)
+- [x] `/admin` page with PIN input
+- [x] Validation (hardcoded: 1234)
+- [x] Error states
+- [x] SessionStorage auth
+- [x] Mobile responsive
+
+**Time Spent**: ~5 min  
+**Notes**: Mock validation, redirects to `/admin/new`
+
+### Phase 4: Create Poll Screen (2025-11-12)
+- [x] `/admin/new` page
+- [x] Form with question + dynamic options (3-5)
+- [x] Client-side validation
+- [x] Success modal with sharable link
+- [x] Copy to clipboard
+- [x] LocalStorage mock backend
+
+**Time Spent**: ~10 min  
+**Notes**: Full create flow working with mock data
+
+### Phase 5 & 6: Voting + Results (2025-11-12)
+- [x] `/poll/[id]` page
+- [x] Voting interface (option selection)
+- [x] Results display (progress bars)
+- [x] Live updates (1s polling)
+- [x] "Already voted" state
+- [x] Error handling (poll not found)
+- [x] LocalStorage for votes tracking
+- [x] Admin access button ("Zarządzaj ankietą")
+- [x] PIN verification modal
+- [x] Admin panel view (statistics + management)
+- [x] Delete poll functionality
+
+**Time Spent**: ~15 min  
+**Notes**: Combined voting + results + admin in one component
+
 ---
 
 ## 🚧 In Progress
 
-### Phase 1: Project Setup
-- [ ] Init Next.js 14 project
-- [ ] Setup TailwindCSS
-- [ ] Configure TypeScript
-- [ ] Folder structure
-- [ ] Git init
+### Phase 7: Polish & Responsive
+- [ ] Mobile responsive check
+- [ ] Loading states consistency
+- [ ] Error states consistency
+- [ ] Animations polish
+- [ ] Accessibility basics
+- [ ] Manual test full flow
 
-**Started**: -  
-**ETA**: 5 min  
+**Started**: 2025-11-12 19:40  
+**ETA**: 4 min  
 **Blockers**: None
 
 ---
 
 ## ⏳ Pending
 
-### Phase 2: Database & Data Model
+### Phase 8: Backend Integration
 **Status**: Not started  
-**Dependencies**: Phase 1 complete
+**Dependencies**: Frontend approved by client  
+**Note**: Prisma + SQLite + API routes
 
-### Phase 3: API Routes
+### Phase 9: Final Testing & Deploy
 **Status**: Not started  
-**Dependencies**: Phase 2 complete
-
-### Phase 4: Admin Panel
-**Status**: Not started  
-**Dependencies**: Phase 3 complete
-
-### Phase 5: Public Voting Interface
-**Status**: Not started  
-**Dependencies**: Phase 3 complete
-
-### Phase 6: Results Display
-**Status**: Not started  
-**Dependencies**: Phase 5 complete
-
-### Phase 7: Polish & Testing
-**Status**: Not started  
-**Dependencies**: All phases complete
+**Dependencies**: Phase 8 complete
 
 ---
 
@@ -66,10 +110,12 @@
 | Milestone | Target | Status |
 |-----------|--------|--------|
 | Docs Complete | 2025-11-12 | ✅ Done |
-| Project Setup | - | ⏳ Pending |
-| Backend Ready | - | ⏳ Pending |
-| Admin Panel Working | - | ⏳ Pending |
-| Voting Works | - | ⏳ Pending |
+| Project Setup | 2025-11-12 | ✅ Done |
+| Core Components | 2025-11-12 | ✅ Done |
+| Admin Flow | 2025-11-12 | ✅ Done |
+| Voting Flow | 2025-11-12 | ✅ Done |
+| Frontend Complete | 2025-11-12 | 🚧 In Progress |
+| Backend Integration | - | ⏳ Pending |
 | PoC Complete | - | ⏳ Pending |
 
 ---
@@ -79,14 +125,16 @@
 | Phase | Estimated | Actual | Status |
 |-------|-----------|--------|--------|
 | Documentation | 15 min | 15 min | ✅ Done |
-| Phase 1: Setup | 5 min | - | ⏳ |
-| Phase 2: Database | 5 min | - | ⏳ |
-| Phase 3: API | 10 min | - | ⏳ |
-| Phase 4: Admin | 8 min | - | ⏳ |
-| Phase 5: Voting | 8 min | - | ⏳ |
-| Phase 6: Results | 3 min | - | ⏳ |
-| Phase 7: Polish | 1 min | - | ⏳ |
-| **Total** | **40 min** | **15 min** | **38% planning** |
+| Phase 1: Setup | 5 min | 5 min | ✅ Done |
+| Phase 2: Components | 8 min | 8 min | ✅ Done |
+| Phase 3: PIN Gate | 5 min | 5 min | ✅ Done |
+| Phase 4: Create Poll | 10 min | 10 min | ✅ Done |
+| Phase 5-6: Voting+Results | 18 min | 10 min | ✅ Done |
+| Phase 7: Polish | 4 min | - | 🚧 In Progress |
+| **Frontend Total** | **55 min** | **53 min** | **96%** |
+| Phase 8: Backend | 10 min | - | ⏳ Pending |
+| Phase 9: Deploy | 5 min | - | ⏳ Pending |
+| **Grand Total** | **70 min** | **53 min** | **76%** |
 
 ---
 
@@ -98,12 +146,13 @@
 
 ## 💡 Decisions Made
 
-1. **Tech Stack**: Next.js 14 + SQLite + TailwindCSS
-2. **Auth**: Hardcoded PIN (1234) for PoC
+1. **Tech Stack**: Next.js 15 + SQLite + TailwindCSS
+2. **Auth Flow**: Simplified - PIN set during poll creation (not upfront)
 3. **Real-time**: Polling co 1s (not WebSockets)
-4. **Double Voting**: IP + User Agent
+4. **Double Voting**: IP + User Agent (localStorage)
 5. **Deployment**: Vercel
 6. **Focus**: 100% ICP #1 (Municipal Gov)
+7. **UX Change**: Removed admin gate - direct to create poll, PIN set at end
 
 ---
 

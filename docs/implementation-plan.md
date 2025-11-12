@@ -95,97 +95,190 @@ export default function RootLayout({ children }) {
 
 ---
 
-## Phase 2: Database & Data Model (5 min)
+## Phase 2: Core Components Library (8 min)
+
+### Tasks
+- [ ] `Button` component (primary, secondary, ghost variants)
+- [ ] `Input` component (text input with label, error states)
+- [ ] `Card` component (container z shadow, padding)
+- [ ] `ProgressBar` component (dla wyników)
+- [ ] `LoadingSpinner` component
+- [ ] `ErrorMessage` component
+
+### Component Specs
+```typescript
+// Button: primary (blue), secondary (gray), ghost (transparent)
+// Input: label, placeholder, error message, onChange
+// Card: children, className, padding variants
+// ProgressBar: value (0-100), label, color
+```
+
+### Deliverable
+✅ Reusable components gotowe w `/components/ui/`
+
+---
+
+## Phase 3: Admin PIN Gate Screen (5 min)
+
+### Tasks
+- [ ] `/admin` page
+- [ ] PIN input (4 cyfry, numeric only)
+- [ ] Walidacja (hardcoded: 1234)
+- [ ] Error state: "Nieprawidłowy PIN"
+- [ ] Success → redirect do `/admin/new`
+- [ ] Mobile responsive
+
+### UI Requirements
+- Centered layout
+- Large PIN input (numeric keyboard on mobile)
+- Clear error messaging
+- Loading state podczas walidacji
+
+### Deliverable
+✅ `/admin` - działający PIN gate (mock validation)
+
+---
+
+## Phase 4: Create Poll Screen (10 min)
+
+### Tasks
+- [ ] `/admin/new` page
+- [ ] Form layout:
+  - Input: Pytanie (required, max 200 chars)
+  - Dynamic inputs: Opcje (3-5, add/remove buttons)
+  - Button: Utwórz ankietę
+- [ ] Client-side validation:
+  - Pytanie nie może być puste
+  - Min 3 opcje, max 5
+  - Opcje nie mogą być puste
+- [ ] Success state → pokazuje sharable link
+- [ ] Copy to clipboard functionality
+- [ ] Mobile responsive
+
+### UI Requirements
+- Clean form layout
+- Add/remove option buttons (+ / -)
+- Character counter dla pytania
+- Disabled state gdy form invalid
+- Success modal z linkiem do ankiety
+
+### Deliverable
+✅ `/admin/new` - formularz tworzenia ankiety (mock data, localStorage)
+
+---
+
+## Phase 5: Public Voting Screen (10 min)
+
+### Tasks
+- [ ] `/poll/[id]` page
+- [ ] Layout:
+  - Header: Logo/tytuł
+  - Pytanie (large, centered)
+  - Opcje (clickable cards/buttons)
+  - Button: Zagłosuj (disabled until option selected)
+- [ ] States:
+  - Loading (fetching poll)
+  - Voting (opcje aktywne)
+  - Voted (pokazuje wyniki)
+  - Already voted (pokazuje wyniki + info)
+  - Error (poll not found)
+- [ ] Mobile responsive (touch-friendly)
+
+### UI Requirements
+- Large, touch-friendly option cards
+- Visual feedback on selection (border/background)
+- Smooth transition voting → results
+- Clear "Already voted" message
+
+### Deliverable
+✅ `/poll/[id]` - voting interface (mock data, localStorage dla voted state)
+
+---
+
+## Phase 6: Results Display (8 min)
+
+### Tasks
+- [ ] Results view (w tym samym `/poll/[id]`)
+- [ ] Layout:
+  - Pytanie (top)
+  - Progress bars dla każdej opcji
+  - Procenty + liczba głosów
+  - Total votes counter
+  - "Twój głos" indicator
+- [ ] Mock polling (useEffect, 1s interval)
+- [ ] Animacje (smooth progress bar updates)
+- [ ] Mobile responsive
+
+### UI Requirements
+- Progress bars z labels (opcja + procent)
+- Highlight wybranej opcji
+- Total votes prominent
+- Smooth animations (transition)
+
+### Deliverable
+✅ Results display z mock live updates
+
+---
+
+## Phase 7: Polish & Responsive (4 min)
+
+### Tasks
+- [ ] Mobile responsive check (wszystkie ekrany)
+- [ ] Loading states consistency
+- [ ] Error states consistency
+- [ ] Animations polish (transitions, hover states)
+- [ ] Accessibility basics:
+  - Semantic HTML
+  - Keyboard navigation
+  - Focus states
+  - ARIA labels gdzie potrzeba
+- [ ] Manual test full flow:
+  - Admin: PIN → create poll → copy link
+  - Voter: open link → vote → see results
+  - Voter 2: try to vote again → see "already voted"
+
+### Deliverable
+✅ Frontend complete - gotowy do pokazania klientowi
+
+---
+
+## Phase 8: Backend Integration (10 min)
+
+**NOTE: Robimy dopiero po zatwierdzeniu UI przez klienta**
 
 ### Tasks
 - [ ] Setup Prisma with SQLite
-- [ ] Define schema:
-  - `Poll` model (id, question, options, createdAt)
-  - `Vote` model (id, pollId, optionIndex, ipAddress, userAgent, votedAt)
+- [ ] Define schema (Poll, Vote models)
 - [ ] Run migrations
-- [ ] Seed example poll (optional)
+- [ ] API Routes:
+  - `POST /api/admin/polls` - create poll
+  - `GET /api/polls/[id]` - get poll
+  - `POST /api/polls/[id]/vote` - submit vote (IP + UA check)
+  - `GET /api/polls/[id]/results` - get results
+- [ ] Replace mock data z API calls
+- [ ] IP + User Agent double voting prevention
+- [ ] Error handling (network, validation)
 
 ### Deliverable
-✅ Database ready, models zdefiniowane
+✅ Full-stack app działa end-to-end
 
 ---
 
-## Phase 3: API Routes (10 min)
+## Phase 9: Final Testing & Deploy (5 min)
 
 ### Tasks
-- [ ] `POST /api/admin/polls` - tworzenie ankiety
-- [ ] `GET /api/polls/[id]` - pobieranie ankiety
-- [ ] `POST /api/polls/[id]/vote` - oddanie głosu
-  - IP + User Agent check
-  - Double voting prevention
-- [ ] `GET /api/polls/[id]/results` - wyniki (polling endpoint)
-
-### Deliverable
-✅ Backend działa, można testować przez Postman/curl
-
----
-
-## Phase 4: Admin Panel (8 min)
-
-### Tasks
-- [ ] `/admin` - PIN gate (hardcoded: 1234)
-- [ ] `/admin/new` - formularz tworzenia ankiety
-  - Input: pytanie
-  - Input: 3-5 opcji (dynamic fields)
-  - Button: Utwórz ankietę
-- [ ] Po utworzeniu → redirect do `/poll/[id]` + copy link
-
-### Deliverable
-✅ Admin może tworzyć ankiety
-
----
-
-## Phase 5: Public Voting Interface (8 min)
-
-### Tasks
-- [ ] `/poll/[id]` - widok ankiety
-  - Wyświetl pytanie
-  - Wyświetl opcje (radio buttons / cards)
-  - Button: Zagłosuj
-- [ ] Po głosowaniu → wyświetl wyniki
-- [ ] Polling co 1s (useEffect) - live updates
-- [ ] Error handling:
-  - Poll not found
-  - Already voted
+- [ ] End-to-end test (full user flow)
+- [ ] Mobile test (iOS + Android)
+- [ ] Edge cases:
+  - Invalid poll ID
   - Network errors
+  - Concurrent votes
+- [ ] Deploy to Vercel
+- [ ] Test production URL
+- [ ] Share with stakeholders
 
 ### Deliverable
-✅ Voter może zagłosować i zobaczyć wyniki
-
----
-
-## Phase 6: Results Display (3 min)
-
-### Tasks
-- [ ] Progress bars dla każdej opcji
-- [ ] Procenty + liczba głosów
-- [ ] Total votes counter
-- [ ] Auto-refresh co 1s
-
-### Deliverable
-✅ Live results działają
-
----
-
-## Phase 7: Polish & Testing (1 min)
-
-### Tasks
-- [ ] Mobile responsive check
-- [ ] Loading states
-- [ ] Basic styling (TailwindCSS)
-- [ ] Quick manual test:
-  - Utwórz ankietę
-  - Zagłosuj z 2 urządzeń
-  - Sprawdź double voting prevention
-  - Sprawdź live updates
-
-### Deliverable
-✅ PoC gotowy do demo
+✅ PoC live w produkcji
 
 ---
 
